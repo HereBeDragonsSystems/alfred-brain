@@ -1,6 +1,6 @@
 {
-  "name": "@decaf-ts/ts-workspace",
-  "version": "3.9.1",
+  "name": "@herebedragonsstudios/alfred-brain",
+  "version": "0.0.1",
   "description": "template for ts projects",
   "type": "module",
   "exports": {
@@ -13,7 +13,6 @@
     "update-scripts": "node ./bin/update-scripts.cjs",
     "on-first-run": "node ./bin/update-scripts.cjs --boot",
     "set-git-auth": "git config url.\"https://api:$(cat .token)@github.com/\".insteadOf \"https://github.com/\" && git config url.\"https://ssh:$(cat .token)@github.com/\".insteadOf \"ssh://git@github.com/\" && git config url.\"https://git:$(cat .token)@github.com/\".insteadOf \"git@github.com:\"",
-    "postinstall": "[ -z $CI ] && npm run on-first-run || echo 'CI detected, skipping on-first-run'",
     "flash-forward": "npx npm-check-updates -u && npm run do-install",
     "reset": "rm -rf * && git checkout . && git pull && npm run do-install",
     "build": "node ./bin/build-scripts.cjs --dev",
@@ -72,8 +71,6 @@
     "typescript",
     "ts"
   ],
-  "author": "Tiago Venceslau",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/decaf-ts/ts-workspace/issues"
   },
@@ -109,5 +106,10 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.31.0"
+  },
+  "dependencies": {
+    "@qdrant/js-client-rest": "^1.14.1",
+    "natural": "^8.1.0",
+    "tiktoken": "^1.0.21"
   }
 }
