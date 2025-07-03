@@ -2,7 +2,7 @@ import { QdrantClient } from "@qdrant/js-client-rest";
 import { DataToSparse, DenseVectors, SplitDocs } from "./dataToSparse";
 import { randomUUID } from "crypto";
 
-const collectionName = "test-collection-dense";
+const collectionName = "dense_collection";
 
 jest.setTimeout(1000000);
 
@@ -26,11 +26,6 @@ describe("Qdrant", () => {
             size: 768,
           },
         },
-        // sparse_vectors: {
-        //   bm42: {
-        //     modifier: "idf",
-        //   },
-        // },
       });
 
       expect(response).toBeTruthy();
@@ -53,21 +48,9 @@ describe("Qdrant", () => {
   });
 
   it("Upserts points with only Dense Vectors", async () => {
-    const inputData = DataToSparse;
-
-    console.log(inputData);
-
     // 3. Run document loader
     const docs = SplitDocs;
 
-    if (docs.length !== inputData.length) {
-      console.log(`docs: $docs.length}`);
-      console.log(`input: ${inputData.length}`);
-    } else {
-      console.log("items match");
-    }
-
-    console.log("I have process all");
     // 4. generate points with sparse vectors
     const points = [];
 
@@ -86,7 +69,6 @@ describe("Qdrant", () => {
         id: randomUUID(),
         vector: {
           default: embed,
-          // bm42: bm42,
         },
         payload: {
           content: docs[i].pageContent,
@@ -95,21 +77,17 @@ describe("Qdrant", () => {
       });
     }
 
-    console.log("vectors");
+    await client.delete(collectionName, {
+      filter: {
+        must: [
+          {
+            key: "metadata.title",
+            match: { value: docs[0].metadata.title },
+          },
+        ],
+      },
+    });
 
-    // // 5. Delete existing vectors by title
-    // await client.delete(collectionName, {
-    //   filter: {
-    //     must: [
-    //       {
-    //         key: "metadata.title",
-    //         match: { "value": docs[0].metadata.title }
-    //       }
-    //     ]
-    //   }
-    // });
-
-    // 6. Upsert into Qdrant
     try {
       const res = await client.upsert(collectionName, {
         points: points,
